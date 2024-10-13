@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRegisterMutation } from "../slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../slices/authSlice";
+import Loader from "../components/Loader";
 
 const RegisterScreen = () => {
   const [name, setName] = useState("");
@@ -31,8 +32,8 @@ const RegisterScreen = () => {
   }, [navigate, redirect, userInfo]);
 
   console.log("redirect:::", redirect);
-  const [register, isLoading] = useRegisterMutation();
-
+  const [register, {isLoading}] = useRegisterMutation();
+  console.log("isLoading", isLoading);
   async function submitHandler(e) {
     e.preventDefault();
     const payload = { email, password, name };
@@ -92,17 +93,17 @@ const RegisterScreen = () => {
           ></Form.Control>
         </Form.Group>
 
-        <Button disabled={0} type="submit" variant="primary">
+        <Button disabled={isLoading} type="submit" variant="primary">
           Register
         </Button>
 
-        {/* {isLoading && <Loader />} */}
+        {isLoading && <Loader />}
       </Form>
 
       <Row className="py-3">
         <Col>
           Already have an account?{" "}
-          <Link to={"redirect" ? `/login?redirect=${"redirect"}` : "/login"}>
+          <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
             Login
           </Link>
         </Col>

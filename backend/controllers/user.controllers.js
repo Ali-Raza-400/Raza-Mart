@@ -33,6 +33,7 @@ const registerUser = async (req, res) => {
 //login the user
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log("email, password::::", email, password);
 
   const user = await User.findOne({ email });
 
