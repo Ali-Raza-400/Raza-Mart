@@ -5,6 +5,7 @@ import { Button, Col, Row, Form } from "react-bootstrap";
 import { useLoginMutation } from "../slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../slices/authSlice";
+import { toast } from "react-toastify";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -34,8 +35,11 @@ const LoginScreen = () => {
         password,
       };
       const response = await login(payload);
+      console.log("response:::::", response);
       dispatch(setCredentials({ ...response.data }));
+      navigate(redirect);
     } catch (error) {
+      toast.error(error?.message || "wrong credentials");
       console.log("error::::", error);
     }
   }

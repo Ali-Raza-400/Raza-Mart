@@ -36,7 +36,7 @@ const Header = () => {
         <Container>
           <Navbar.Brand as={Link} to="/">
             <img src={logo} alt="ProShop" width={"60px"} height={"60px"}  style={{marginRight:"10px"}}/>
-            ProShop
+            Raza Mart
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">

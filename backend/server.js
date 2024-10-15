@@ -5,11 +5,13 @@ const app = express();
 dotenv.config();
 import userRoutes from "./routes/user.routes.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 //ports
 const port = process.env.PORT || 5000;
 
 //middleware
+app.use(cookieParser());
 
 app.use(express.json());
 app.use(cors());
