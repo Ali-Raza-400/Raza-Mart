@@ -4,6 +4,7 @@ import connectDB from "./config/db.js";
 const app = express();
 dotenv.config();
 import userRoutes from "./routes/user.routes.js";
+import productRoutes from "./routes/product.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -22,6 +23,7 @@ connectDB();
 
 // routes
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

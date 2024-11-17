@@ -4,7 +4,7 @@ import generateToken from "../utils/gernerate.js";
 
 const registerUser = async (req, res) => {
   console.log("req.body:::", req.body);
-  const { email, password, name } = req.body;
+  const { email, password, name,isAdmin } = req.body;
 
   //check if email already exists
   const userExist = await User.findOne({ email });
@@ -13,7 +13,7 @@ const registerUser = async (req, res) => {
   }
 
   //create new user
-  const user = await User.create({ email, password, name });
+  const user = await User.create({ email, password, name,isAdmin });
   console.log("user:::", user);
   if (user) {
     generateToken(res, user._id);

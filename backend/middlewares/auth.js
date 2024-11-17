@@ -4,11 +4,9 @@ import User from '../models/user.model.js';
 
 const protect = asyncHandler(async (req, res, next) => {
   let token = req.cookies.token; // Get the token from the cookie
-console.log("req.cookies::::",req.cookies);
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRETE_KEY);
-      console.log("decoded::::",decoded);
       req.user = await User.findById(decoded.id).select('-password');
       next();
     } catch (error) {
