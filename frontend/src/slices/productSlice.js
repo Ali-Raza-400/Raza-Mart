@@ -29,6 +29,18 @@ export const productApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    getSingleProducts: builder.query({
+      query: (params) => ({
+        url: `${PRODUCTS_URL}/single/${params?.id}`,
+        method: "GET",
+      }),
+    }),
+    getProductByCategory: builder.query({
+      query: (params) => ({
+        url: `${PRODUCTS_URL}/product-by-cat/${params?.id}`,
+        method: "GET",
+      }),
+    }),
     // updateUserProfile: builder.mutation({
     //   query: (data) => ({
     //     url: `${USERS_URL}/profile`,
@@ -41,6 +53,8 @@ export const productApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useLazyGetProductsQuery,
+  useLazyGetSingleProductsQuery,
+  useLazyGetProductByCategoryQuery
 //   useLoginMutation,
 //   useLogoutMutation,
 //   useGetProfileQuery,

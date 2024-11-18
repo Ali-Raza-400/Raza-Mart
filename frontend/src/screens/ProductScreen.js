@@ -1,45 +1,79 @@
 import React, { useEffect } from "react";
-import { useLazyGetProductsQuery } from "../slices/productSlice";
+import { useParams } from "react-router-dom";
+import { useLazyGetProductByCategoryQuery, useLazyGetSingleProductsQuery } from "../slices/productSlice";
 
 const ProductScreen = () => {
-  const [getProducts, { data, isLoading }] = useLazyGetProductsQuery();
-  console.log("data", data);
+  const params = useParams();
+  console.log("params:::", params);
+  const [getSingleProducts, { isLoading, data }] =
+    useLazyGetSingleProductsQuery();
+    const [getProductByCategory,{data:relatedProduct,isLoading:relProLoading}]=useLazyGetProductByCategoryQuery()
   useEffect(() => {
-    async function fetchProducts() {
+    async function fetchProductDetail() {
       try {
-        const response = await getProducts();
-        console.log("response:::", response);
+        await getSingleProducts(params);
+        await getProductByCategory(params)
       } catch (error) {
         console.log(error);
       }
     }
-    fetchProducts();
-  }, []);
-  return (
-    <>
-     <header className="bg-dark ">
-  <div className=" px-lg-5">
-    <div className="text-center">
-      <img
-        src="https://res.cloudinary.com/dwqmexglg/image/upload/v1731869985/imageUpload/qwwnljrjvyayac38fpfg.jpg"
-        alt="Shop Image"
-        className="img-fluid"
-        
-      />
-    </div>
-  </div>
-</header>
+    params &&  fetchProductDetail();
+  }, [params]);
+  console.log("relatedProduct:::",relatedProduct);
 
+  const ProductSection = () => (
+    <section className="py-5">
+      <div className="container px-4 px-lg-5 my-5">
+        <div className="row gx-4 gx-lg-5 align-items-center">
+          <div className="col-md-6">
+            <img
+              className="card-img-top mb-5 mb-md-0"
+              src={data?.image||"https://dummyimage.com/600x700/dee2e6/6c757d.jpg"}
+              alt="Product"
+            />
+          </div>
+          <div className="col-md-6">
+            <div className="small mb-1">SKU: BST-498</div>
+            <h1 className="display-5 fw-bolder">{data?.name}</h1>
+            <div className="fs-5 mb-5">
+              <span className="text-decoration-line-through">$45.00</span>
+              <span> ${data?.price}</span>
+            </div>
+            <p className="lead">
+              {data?.description}
+            </p>
+            <div className="d-flex">
+              <input
+                className="form-control text-center me-3"
+                id="inputQuantity"
+                type="num"
+                defaultValue="1"
+                style={{ maxWidth: "3rem" }}
+              />
+              <button
+                className="btn btn-outline-dark flex-shrink-0"
+                type="button"
+              >
+                <i className="bi-cart-fill me-1"></i>
+                Add to cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+  const RelatedProducts = () => {
 
-      <section className="py-5">
+    return (
+      <section className="py-5 bg-light">
         <div className="container px-4 px-lg-5 mt-5">
+          <h2 className="fw-bolder mb-4">Related products</h2>
           <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            {/* Map over your products */}
-            {data?.map((product, index) => (
-              <div className="col mb-5" key={index}>
+            {relatedProduct && relatedProduct?.map((product) => (
+              <div key={product.id} className="col mb-5">
                 <div className="card h-100">
-                  {/* Example: Sale Badge */}
-                  {index % 2 === 0 && (
+                  {product.sale && (
                     <div
                       className="badge bg-dark text-white position-absolute"
                       style={{ top: "0.5rem", right: "0.5rem" }}
@@ -49,24 +83,13 @@ const ProductScreen = () => {
                   )}
                   <img
                     className="card-img-top"
-                    src={
-                      product?.image ||
-                      "https://dummyimage.com/450x300/dee2e6/6c757d.jpg"
-                    }
-                    height={'100%'}
-                    width={'100%'}
-                    alt="..."
+                    src={product.image}
+                    alt={product.name}
                   />
                   <div className="card-body p-4">
                     <div className="text-center">
-                      <h5 className="fw-bolder">
-                        {product?.name}
-                      </h5>
-                      <p className="font-bold">{product?.description}</p>
-                      <span className="text-muted text-decoration-line-through">
-                       {`$${JSON.parse(product?.price)+50}`|| "$50.00"}
-                      </span>{" "}
-                     {`$${product?.price}`|| "$25.00"}
+                      <h5 className="fw-bolder">{product.name}</h5>
+                      <div>${product.price}</div>
                     </div>
                   </div>
                   <div className="card-footer p-4 pt-0 border-top-0 bg-transparent">
@@ -82,6 +105,13 @@ const ProductScreen = () => {
           </div>
         </div>
       </section>
+    );
+  };
+
+  return (
+    <>
+      <ProductSection />
+      <RelatedProducts />
     </>
   );
 };
