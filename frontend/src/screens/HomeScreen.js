@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { useLazyGetProductsQuery } from "../slices/productSlice";
 import { useNavigate } from "react-router-dom";
+import { setCartItem } from "../slices/cartSlice";
+import { useDispatch } from "react-redux";
 
 const HomeScreen = () => {
   const navigate=useNavigate()
-  
+  const dispatch =useDispatch()
   const [getProducts, { data, isLoading }] = useLazyGetProductsQuery();
   console.log("data", data);
   useEffect(() => {
@@ -18,6 +20,11 @@ const HomeScreen = () => {
     }
     fetchProducts();
   }, []);
+
+  const addToCart=(product)=>{
+    console.log("product:::",product);
+    dispatch(setCartItem(product))
+  }
   return (
     <>
      <header className="bg-dark ">
@@ -74,7 +81,7 @@ const HomeScreen = () => {
                   </div>
                   <div className="card-footer p-4 pt-0 border-top-0 bg-transparent display-flex ">
                     <div className="text-center">
-                      <a className="btn btn-outline-dark mt-auto" href={`/cart`}>
+                      <a className="btn btn-outline-dark mt-auto" onClick={()=>addToCart(product)}>
                         Add to cart
                       </a>
                     </div>

@@ -9,9 +9,9 @@ import { useLogoutMutation } from "../slices/userSlice";
 // import { resetCart } from '../slices/cartSlice';
 
 const Header = () => {
-  //   const { cartItems } = useSelector((state) => state.cart);
+    const {cart:{cartItems}}  = useSelector((state) => state.cartDetail);
   const { userInfo } = useSelector((state) => state.auth);
-
+console.log("cartItems:::",cartItems);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,11 +44,11 @@ const Header = () => {
               <SearchBox />
               <Nav.Link as={Link} to="/cart">
                 <FaShoppingCart /> Cart
-                {/* {cartItems.length > 0 && (
+                {cartItems.length > 0 && (
                   <Badge pill bg='success' style={{ marginLeft: '5px' }}>
-                    {cartItems.reduce((a, c) => a + c.qty, 0)}
+                    {cartItems.reduce((a, c) => a + c.quantity, 0)}
                   </Badge>
-                )} */}
+                )}
               </Nav.Link>
               {userInfo ? (
                 <>
@@ -57,7 +57,7 @@ const Header = () => {
                       Profile
                     </NavDropdown.Item>
                     <NavDropdown.Item onClick={logoutHandler}>
-                      Logout dsd
+                      Logout
                     </NavDropdown.Item>
                   </NavDropdown>
                 </>

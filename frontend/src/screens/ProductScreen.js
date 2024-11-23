@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useLazyGetProductByCategoryQuery, useLazyGetSingleProductsQuery } from "../slices/productSlice";
+import { useSelector } from "react-redux";
 
 const ProductScreen = () => {
+  const {cart:{cartItems}}  = useSelector((state) => state.cartDetail); 
   const params = useParams();
   console.log("params:::", params);
   const [getSingleProducts, { isLoading, data }] =

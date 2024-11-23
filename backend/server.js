@@ -7,6 +7,7 @@ import userRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from 'path';
 
 //ports
 const port = process.env.PORT || 5000;
@@ -20,6 +21,22 @@ app.options("*", cors());
 
 //database connection function
 connectDB();
+
+if (process.env.NODE_ENV === 'production') {
+  const __dirname = path.resolve();
+  console.log("__dirname:::",__dirname);
+  app.use(express.static(path.join(__dirname, '/frontend/build')));
+
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+  );
+} else {
+  // const __dirname = path.resolve();
+  // app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+  app.get('/', (req, res) => {
+    res.send('API is running....');
+  });
+}
 
 // routes
 app.use("/api/users", userRoutes);
