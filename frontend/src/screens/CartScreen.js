@@ -6,9 +6,13 @@ import {
   removeCartItem,
   setCartItem,
 } from "../slices/cartSlice";
+import { useCreateOrderMutation } from "../slices/orderSlice";
+import { useNavigate } from "react-router-dom";
 
 const CartScreen = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [createOrder] = useCreateOrderMutation();
   const {
     cart: { cartItems },
   } = useSelector((state) => state.cartDetail);
@@ -25,16 +29,26 @@ const CartScreen = () => {
     }
   };
   const removeProduct = (product) => {
-    dispatch(clearAProductFromCart(product._id)); 
+    dispatch(clearAProductFromCart(product._id));
   };
 
   const getTotalPrice = () => {
     return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   };
 
-  const handlePay=()=>{
-    console.log("Payment gateway integration is not implemented",cartItems);
-  }
+  const handlePay = async () => {
+    try {
+      const product = [...cartItems];
+      const resp = await createOrder(product);
+      console.log("resp:::", resp);
+      if (resp?.data?.stripeSessionUrl) {
+        window.location.href = resp.data.stripeSessionUrl; // Use window.location.href to redirect
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    console.log("Payment gateway integration is not implemented", cartItems);
+  };
 
   return (
     <section className="h-100 gradient-custom">
@@ -236,7 +250,10 @@ const CartScreen = () => {
                     </span>
                   </li>
                 </ul>
-                <button className="btn btn-primary btn-lg btn-block" onClick={handlePay}>
+                <button
+                  className="btn btn-primary btn-lg btn-block"
+                  onClick={handlePay}
+                >
                   Go to checkout
                 </button>
               </div>

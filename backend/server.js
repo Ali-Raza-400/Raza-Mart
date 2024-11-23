@@ -5,6 +5,7 @@ const app = express();
 dotenv.config();
 import userRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/product.routes.js";
+import orderRoutes from "./routes/order.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from 'path';
@@ -41,6 +42,7 @@ if (process.env.NODE_ENV === 'production') {
 // routes
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
