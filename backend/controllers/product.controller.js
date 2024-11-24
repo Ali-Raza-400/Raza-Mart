@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import asyncHandler from "../middlewares/asyncHandler.js";
+import asyncHandler from "../middlewares/asynchandler.js";
 import Product from "../models/product.model.js";
 
 const saveProduct = asyncHandler(async (req, res) => {

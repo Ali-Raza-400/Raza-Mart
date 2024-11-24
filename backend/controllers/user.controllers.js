@@ -1,4 +1,4 @@
-import asyncHandler from "../middlewares/asyncHandler.js";
+import asyncHandler from "../middlewares/asynchandler.js";
 import User from "../models/user.model.js";
 import generateToken from "../utils/gernerate.js";
 

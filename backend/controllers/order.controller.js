@@ -1,4 +1,4 @@
-import asyncHandler from "../middlewares/asyncHandler.js";
+import asyncHandler from "../middlewares/asynchandler.js";
 import Order from "../models/order.model.js";
 import dotenv from 'dotenv'
 dotenv.config()
