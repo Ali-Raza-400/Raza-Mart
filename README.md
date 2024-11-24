@@ -31,5 +31,5 @@ To run the project locally, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/raza-eshop.git
+   git clone https://github.com/Ali-Raza-400/Raza-Mart.git
    cd raza-eshop
