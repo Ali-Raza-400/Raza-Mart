@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import Stripe from "stripe";
 const stripe = new Stripe(
-  process.env.STRIPE_KEY
+  "sk_test_51L9UqtG0EzPHWgTDVYnc5JN2mZeTJVJL4xPLUrckxRI4cLqM99NtEcfv7X9zll8k98xHajJouexwEWmcNZaDxDex00HzgsqPH4"
 );
 
 const addOrderItems = asyncHandler(async (req, res) => {
