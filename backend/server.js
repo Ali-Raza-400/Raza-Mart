@@ -6,6 +6,7 @@ dotenv.config();
 import userRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import orderRoutes from "./routes/order.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/review", reviewRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
