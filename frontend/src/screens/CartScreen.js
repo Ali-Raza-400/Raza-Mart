@@ -9,13 +9,16 @@ import {
 } from "../slices/cartSlice";
 import { useCreateOrderMutation } from "../slices/orderSlice";
 import { useNavigate } from "react-router-dom";
-import { useLazyGetReviewsByProductIdQuery } from "../slices/reviewSlice";
+import { useAddReviewMutation, useLazyGetReviewsByProductIdQuery } from "../slices/reviewSlice";
 
 const CartScreen = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [createOrder] = useCreateOrderMutation();
- const[getReviewsByProductId,{data:ReviewData}]= useLazyGetReviewsByProductIdQuery()
+  const { userInfo } = useSelector((state) => state.auth);
+  console.log("userInfo:::", userInfo);
+  const [getReviewsByProductId, { data: ReviewData }] = useLazyGetReviewsByProductIdQuery()
+  const [addReview] = useAddReviewMutation()
   const {
     cart: { cartItems },
   } = useSelector((state) => state.cartDetail);
@@ -40,11 +43,13 @@ const CartScreen = () => {
   };
 
   const [show, setShow] = useState(false);
-
+  const [selectedId, setSelectedId] = useState(null)
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = (id) => {
+    setSelectedId(id)
+    setShow(true)
+  };
   const [review, setReview] = useState({ title: "", id: Math.random() });
-  const [reviewList, setReviewList] = useState([]);
   const handleReviewChange = (e) => {
     setReview({ title: e.target.value, id: Math.random() });
   };
@@ -53,11 +58,25 @@ const CartScreen = () => {
       alert("Please enter a review"); return;
     }
     e.preventDefault();
-    setReviewList([...reviewList, review]);
+    const payload = {
+      product: selectedId,
+      user: userInfo?._id || "",
+      name: userInfo?.name || "",
+      rating: 5,
+      comment: review?.title
+    }
+    console.log(payload);
+    addReview(payload).then(res => {
+      console.log("addReview", res);
+
+    }).catch(err => {
+      console.log(err);
+    })
+
+    // setReviewList([...reviewList, review]);
     setReview({ title: "", id: "" });
     handleClose()
   };
-  console.log("reviewList:::", reviewList);
 
   const handlePay = async () => {
     try {
@@ -112,7 +131,7 @@ const CartScreen = () => {
       badgeColor: "primary",
     },
   ];
-console.log("ReviewData:::",ReviewData);
+  console.log("ReviewData:::", ReviewData);
   return (
     <section className="h-100 gradient-custom">
       <div className="container py-5">
@@ -167,11 +186,15 @@ console.log("ReviewData:::",ReviewData);
                           </button>
                           <button
                             className="btn btn-success btn-sm mb-2 ms-2"
-                            onClick={() => getReviewsByProductId(product._id).then((res)=>{
-                              console.log("res:::",res);
+                            onClick={() => getReviewsByProductId(product._id).then((res) => {
+                              console.log("res:::", res);
                             })}
                           >
                             Show Reviews
+                          </button>
+                          <button variant="primary" onClick={() => handleShow(product._id)} className="btn btn-info btn-sm mb-2 ms-2"
+                          >
+                            Click Me
                           </button>
                         </div>
 
@@ -329,9 +352,7 @@ console.log("ReviewData:::",ReviewData);
                 </button>
               </div>
             </div>
-            <Button variant="primary" onClick={handleShow}>
-              Click Me
-            </Button>
+
 
           </div>
           <section style={{ backgroundColor: "#ad655f" }} className="mt-5">
@@ -343,12 +364,12 @@ console.log("ReviewData:::",ReviewData);
                       <h4 className="mb-0">Recent Reviews</h4>
                       <p className="fw-light mb-4 pb-2">Latest Reviews section by users</p>
 
-                      {ReviewData?.length>0? ReviewData.map((review) => (
+                      {ReviewData?.length > 0 ? ReviewData.map((review) => (
                         <div key={review?.id}>
                           <div className="d-flex flex-start">
                             <img
                               className="rounded-circle shadow-1-strong me-3"
-                              src={review?.avatar ||"https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp"}
+                              src={review?.avatar || "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp"}
                               alt="avatar"
                               width="60"
                               height="60"
@@ -369,7 +390,7 @@ console.log("ReviewData:::",ReviewData);
                           </div>
                           <hr className="my-0" />
                         </div>
-                      )):"No review"}
+                      )) : "No review"}
                     </div>
                   </div>
                 </div>
