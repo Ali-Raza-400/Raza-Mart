@@ -23,6 +23,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 import PrivateRoute from "./components/PrivateRoute";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import DashboardScreen from "./screens/dashborad/DashboardScreen.js";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -37,8 +38,10 @@ const router = createBrowserRouter(
       <Route path="/cart" element={<CartScreen />} />
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
+      
       {/* Registered users */}
       <Route path="" element={<PrivateRoute />}>
+      <Route path="/dashboard" element={<DashboardScreen />} />
         <Route path="/payment/cancel" element={<ShippingScreen />} />
         <Route path="/payment/success" element={<PaymentScreen />} />
         <Route path="/placeorder" element={<PlaceOrderScreen />} />
