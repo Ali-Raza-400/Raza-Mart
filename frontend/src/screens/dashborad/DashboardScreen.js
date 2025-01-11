@@ -9,9 +9,9 @@ const Dashboard= () => {
     <div className="dashboard">
       <h1>E-commerce Dashboard</h1>
       <div className="chart-grid">
+        <UserRegistrationChart />
         <DailySalesChart />
         <ProductCategoriesChart />
-        <UserRegistrationChart />
         <FilterUsageHeatmap />
       </div>
     </div>

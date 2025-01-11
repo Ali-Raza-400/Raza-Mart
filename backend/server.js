@@ -7,6 +7,7 @@ import userRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -32,6 +33,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/review", reviewRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
