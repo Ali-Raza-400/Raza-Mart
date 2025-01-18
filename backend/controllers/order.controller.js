@@ -1,6 +1,7 @@
 import asyncHandler from "../middlewares/asynchandler.js";
 import Order from "../models/order.model.js";
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import mongoose from "mongoose";
 dotenv.config()
 import Stripe from "stripe";
 const stripe = new Stripe(
@@ -160,4 +161,25 @@ const rollbackByLastUpdatedDate = asyncHandler(async (req, res) => {
   }
 });
 
-export { addOrderItems, updateStatusMigration };
+const getTranscationHistory=asyncHandler(async(req,res)=>{
+  console.log("req:::");
+  const userId="6739e2a44a06b97bb3903ad2"
+  //check if user id is provided
+  if(!userId){
+    return res.status(400).json({msg:"User id is required"})
+  }
+  //check if user id is valid mongodb id
+  if(!mongoose.Types.ObjectId.isValid(userId)){
+    return res.status(400).json({msg:"Invalid user id"})
+  }
+  //fetch record by userid from query params
+  const transactions=await Order.find({user:userId, isPaid:true, }).sort({updatedAt:-1})
+  console.log("transactions:::",transactions);
+  res.status(200).json(transactions)
+
+
+  res.status(200).json(transactions)
+ 
+})
+
+export { addOrderItems, updateStatusMigration,getTranscationHistory };

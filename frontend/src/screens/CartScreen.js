@@ -7,7 +7,7 @@ import {
   removeCartItem,
   setCartItem,
 } from "../slices/cartSlice";
-import { useCreateOrderMutation } from "../slices/orderSlice";
+import { useCreateOrderMutation, useGetTranscationHistoryQuery } from "../slices/orderSlice";
 import { useNavigate } from "react-router-dom";
 import { useAddReviewMutation, useLazyGetReviewsByProductIdQuery } from "../slices/reviewSlice";
 
@@ -16,8 +16,8 @@ const CartScreen = () => {
   const navigate = useNavigate();
   const [createOrder] = useCreateOrderMutation();
   const { userInfo } = useSelector((state) => state.auth);
-  console.log("userInfo:::", userInfo);
   const [getReviewsByProductId, { data: ReviewData }] = useLazyGetReviewsByProductIdQuery()
+  const getTranscationHistory = useGetTranscationHistoryQuery()
   const [addReview] = useAddReviewMutation()
   const {
     cart: { cartItems },
@@ -92,45 +92,20 @@ const CartScreen = () => {
     console.log("Payment gateway integration is not implemented", cartItems);
   };
 
+  console.log("getTranscationHistory:::", getTranscationHistory);
 
-  const comments = [
-    {
-      id: 1,
-      name: "Maggie Marsh",
-      date: "March 07, 2021",
-      status: "Pending",
-      avatar: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(23).webp",
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it.",
-      badgeColor: "primary",
-    },
-    {
-      id: 2,
-      name: "Lara Stewart",
-      date: "March 15, 2021",
-      status: "Approved",
-      avatar: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(26).webp",
-      text: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
-      badgeColor: "success",
-    },
-    {
-      id: 3,
-      name: "Alexa Bennett",
-      date: "March 24, 2021",
-      status: "Rejected",
-      avatar: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(33).webp",
-      text: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
-      badgeColor: "danger",
-    },
-    {
-      id: 4,
-      name: "Betty Walker",
-      date: "March 30, 2021",
-      status: "Pending",
-      avatar: "https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(24).webp",
-      text: "It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable.",
-      badgeColor: "primary",
-    },
-  ];
+
+
+  const tableData = getTranscationHistory?.data?.map((transaction) => ({
+    activity: transaction.orderItems.map((item) => item.name).join(', '), // Combine item names
+    mode: transaction.paymentMethod,
+    date: new Date(transaction.createdAt).toLocaleDateString(),
+    amount: `$${transaction.totalPrice.toFixed(2)}`,
+    icon: 'fa-shopping-cart', // Example icon
+    modeIcon: transaction.paymentMethod === 'card' ? 'fa-credit-card' : 'fa-cash',
+    amountIcon: transaction.isPaid ? 'fa-check-circle' : 'fa-times-circle',
+  }));
+
   console.log("ReviewData:::", ReviewData);
   return (
     <section className="h-100 gradient-custom">
@@ -397,6 +372,81 @@ const CartScreen = () => {
               </div>
             </div>
           </section>
+          <section>
+            <h3>Payments</h3>
+            <div className="wrapper rounded">
+              {/* Navbar */}
+              <nav className="navbar navbar-expand-lg  dark d-lg-flex align-items-lg-start">
+                <a className="navbar-brand" href="#">
+                  Transactions
+                  <p className="text-muted pl-1">Welcome to your transactions</p>
+                </a>
+                <button
+                  className="navbar-toggler"
+                  type="button"
+                  data-toggle="collapse"
+                  data-target="#navbarNav"
+                  aria-controls="navbarNav"
+                  aria-expanded="false"
+                  aria-label="Toggle navigation"
+                >
+                  <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarNav">
+                  <ul className="navbar-nav ml-lg-auto">
+                    <li className="nav-item">
+                      <a className="nav-link" href="#">
+                        <span className="fa fa-bell-o font-weight-bold"></span>
+                        <span className="notify">Notifications</span>
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a href="#">
+                        <span className="fa fa-search"></span>
+                      </a>
+                      <input type="search" className="dark" placeholder="Search" />
+                    </li>
+                  </ul>
+                </div>
+              </nav>
+
+              {/* Table */}
+              <div className="table-responsive mt-3">
+                <table className="table table-dark table-borderless">
+                  <thead>
+                    <tr>
+                      <th scope="col">Activity</th>
+                      <th scope="col">Mode</th>
+                      <th scope="col">Date</th>
+                      <th scope="col" className="text-right">
+                        Amount
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {getTranscationHistory?.isLoading ? "Loading..." : tableData?.length>0 ? tableData?.map((row, index) => (
+                      <tr key={index}>
+                        <td scope="row">
+                          <span className={`fa ${row.icon} mr-1`}></span>
+                          {row.activity}
+                        </td>
+                        <td>
+                          <span className={`fa ${row.modeIcon} mr-1`}></span>
+                          {row.mode}
+                        </td>
+                        <td className="text-muted">{row.date}</td>
+                        <td className="d-flex justify-content-end align-items-center">
+                          <span className={`fa ${row.amountIcon} mr-1`}></span>
+                          {row.amount}
+                        </td>
+                      </tr>
+                    )):<div style={{display:'flex',justifyContent:"center",width:'100%'}}>"No data available"</div>}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
 
           {/* <Button variant="primary" onClick={handleShow}>
             Click Me

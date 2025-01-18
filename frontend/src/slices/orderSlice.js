@@ -10,9 +10,17 @@ export const orderApiSlice = apiSlice.injectEndpoints({
           body: product,
         }),
       }),
+    getTranscationHistory: builder.query({
+        query: (product) => ({
+          url: `${ORDERS_URL}/transction-hostory`,
+          method: 'GET',
+          body: product,
+        }),
+      }),
   }),
 });
 
 export const {
-    useCreateOrderMutation
+    useCreateOrderMutation,
+    useGetTranscationHistoryQuery
 } = orderApiSlice;
