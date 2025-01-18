@@ -24,6 +24,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import DashboardScreen from "./screens/dashborad/DashboardScreen.js";
+import { Whishlist } from "./screens/Whishlist.js";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -47,6 +48,7 @@ const router = createBrowserRouter(
         <Route path="/placeorder" element={<PlaceOrderScreen />} />
         <Route path="/order/:id" element={<OrderScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
+        <Route path="/whishlist" element={<Whishlist />} />
       </Route>
       {/* Admin users */}
       {/* <Route path='' element={<AdminRoute />}>

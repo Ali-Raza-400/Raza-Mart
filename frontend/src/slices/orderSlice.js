@@ -1,4 +1,4 @@
-import { ORDERS_URL, PRODUCTS_URL } from "../constants";
+import { ORDERS_URL, PRODUCTS_URL, WHISHLIST } from "../constants";
 import { apiSlice } from "./apiSlice";
 
 export const orderApiSlice = apiSlice.injectEndpoints({
@@ -17,10 +17,27 @@ export const orderApiSlice = apiSlice.injectEndpoints({
           body: product,
         }),
       }),
+
+      getWhishlist: builder.query({
+        query: (userId) => ({
+          url: `${WHISHLIST}/getall/:${userId}`,
+          method: 'GET',
+          // body: payload,
+        }),
+      }),
+      addWhishlist: builder.mutation({
+        query: (payload) => ({
+          url: `${WHISHLIST}/add`,
+          method: 'POST',
+          body: payload,
+        }),
+      }),
   }),
 });
 
 export const {
     useCreateOrderMutation,
-    useGetTranscationHistoryQuery
+    useGetTranscationHistoryQuery,
+    useGetWhishlistQuery,
+    useAddWhishlistMutation
 } = orderApiSlice;
