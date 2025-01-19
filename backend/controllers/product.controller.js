@@ -3,15 +3,31 @@ import asyncHandler from "../middlewares/asynchandler.js";
 import Product from "../models/product.model.js";
 
 const saveProduct = asyncHandler(async (req, res) => {
-  const { name, price, description,categories ,image} = req.body;
-  const product = new Product({ name, price, description, user: req.user._id,categories,image });
-  const createProduct = await product.save();
-  res.status(200).json(createProduct);
+    const { name, price, description, categories, image } = req.body;
+    const product = new Product({ name, price, description, user: req.user._id, categories, image });
+    const createProduct = await product.save();
+    res.status(200).json(createProduct);
 });
-const getProducts = asyncHandler(async (req, res)=>{
-   const products= await Product.find()
+const getProducts = asyncHandler(async (req, res) => {
+    // get products by searched keywords
+    const pageSize = 5;
+    const page = Number(req.query.pageNumber) || 1;
+    const keyword = req.query.keyword
+        ? {
+            name: {
+                $regex: req.query.keyword,
+                $options: 'i',
+            },
+        }
+        : {};
+    const count = await Product.countDocuments({ ...keyword });
+    const products = await Product.find({ ...keyword }).limit(pageSize)
+        .skip(pageSize * (page - 1));;
+    if (!products) {
+        return res.status(404).json({ msg: "Products not found" });
+    }
+    res.json({ products, page, pages: Math.ceil(count / pageSize) });
 
-    res.status(200).json(products)
 })
 const getSingleProduct = asyncHandler(async (req, res) => {
     const productId = req.params.id;
@@ -60,4 +76,4 @@ const getSingleProductByCat = asyncHandler(async (req, res) => {
     res.status(200).json(productByCat);
 });
 
-export { saveProduct ,getProducts,getSingleProduct,getSingleProductByCat};
+export { saveProduct, getProducts, getSingleProduct, getSingleProductByCat };

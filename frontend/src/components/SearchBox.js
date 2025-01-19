@@ -9,7 +9,7 @@ const SearchBox = () => {
 
   // FIX: uncontrolled input - urlKeyword may be undefined
   const [keyword, setKeyword] = useState(urlKeyword || '');
-
+console.log("keyword::::",keyword);
   const submitHandler = (e) => {
     e.preventDefault();
     if (keyword) {
